@@ -255,8 +255,6 @@ git commit  # 提交
   git diff <branch-name1>:<file-name> <branch-name2>:<file-name>
   ```
 
-  
-
 <br>
 
 
@@ -361,6 +359,81 @@ git commit  # 提交
         ```
 
       - 在 Github 上有各种常用语言的忽略模板，新建仓库的时候我们可以直接使用，也可以根据自己需要进行修改
+  
+- **多 `.gitignore` 文件的工作机制**
+
+  - **作用域规则**
+
+    每个 `.gitignore` 文件只对它所在的目录及其子目录有效：
+
+    ```shell
+    my-project/
+    ├── .gitignore           # 作用于整个项目
+    ├── src/
+    │   ├── .gitignore       # 只作用于 src/ 目录及其子目录
+    │   └── main.js
+    ├── tests/
+    │   ├── .gitignore       # 只作用于 tests/ 目录及其子目录
+    │   └── test.js
+    └── docs/
+        └── README.md
+    ```
+
+  - **优先级顺序**
+
+    **子目录的 `.gitignore` 文件优先级更高**：
+    1. 首先应用项目根目录的 `.gitignore`
+    2. 然后应用子目录的 `.gitignore`（会覆盖父目录的规则）
+
+    ```bash
+    # 根目录 .gitignore
+    *.log        # 忽略所有 .log 文件
+    test/        # 忽略 test 目录
+    
+    # src/.gitignore
+    !debug.log   # 不忽略 src/ 下的 debug.log
+    ```
+
+    结果：
+    - `app.log` → 被忽略
+    - `src/app.log` → 被忽略
+    - `src/debug.log` → **不被忽略**（子目录规则覆盖了父目录规则）
+
+  - **规则继承与覆盖**
+
+    - 子目录的规则会**添加或修改**父目录的规则
+    - Git 会**从根目录向下逐层**应用规则
+    - 后面的规则（子目录）可以覆盖前面的规则（父目录）
+
+- 全局 `.gitignore` 文件**
+
+  除了项目内的 `.gitignore`，Git 还支持全局配置：
+
+```bash
+# 设置全局忽略文件
+git config --global core.excludesfile ~/.gitignore_global
+```
+
+​	**执行顺序**：
+​    1. 项目根目录 `.gitignore`
+​       2. 子目录 `.gitignore`
+​       3. 全局 `.gitignore`
+
+- **推荐的结构**
+
+  ```shell
+  project/
+  ├── .gitignore              # 项目通用规则
+  ├── src/
+  │   └── .gitignore         # 源代码特定规则
+  ├── tests/
+  │   └── .gitignore         # 测试文件特定规则
+  ├── docs/
+  │   └── .gitignore         # 文档相关规则
+  └── build/                  # 这个目录通常被忽略
+  ```
+
+<br>
 
 
 
