@@ -348,7 +348,7 @@ git commit  # 提交
         !lib.a
         
         # 只忽略当前目录下的 TODO 文件，不忽略子文件夹下的 TODO 文件
-        /TODO   # / 表示当前git仓库的根目录
+        /TODO   # / 的参照点是 .gitignore 文件自身的位置
         
         # 忽略所有目录下名为的 build 文件夹
         build/
